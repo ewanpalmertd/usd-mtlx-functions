@@ -1,3 +1,4 @@
+import json
 from pxr import Usd, Sdf, UsdShade
 
 class MtlxShade:

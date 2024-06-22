@@ -1,0 +1,12 @@
+#usda 1.0
+
+def Scope "materials"
+{
+    def Material "mtl_materialx_test"
+    {
+        def Shader "constant_test"
+        {
+        }
+    }
+}
+
