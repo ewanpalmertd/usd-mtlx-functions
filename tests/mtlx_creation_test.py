@@ -1,27 +1,31 @@
 from pxr import Usd, Sdf, UsdShade
 
-"""
-quick test to make sure that writing mtlx properties to an empty shader prim
-translates to a materialx node inside of Houdini
-"""
+def MtlxNodeTest(filename:str = None) -> None:
+    """ using UsdShade API to create a dummy materialx prim to be loaded into 
+    houdini
 
-layer = Sdf.Layer.CreateNew("mtlx_test.usda")
+    :params:
+    filename(str) : the name of the output usda file
+    """
+    stage    = Usd.Stage.CreateNew(filename)
+    material = UsdShade.Material.Define(stage, "/materials/MTL_test")
 
-root_path  = Sdf.Path("/materials")
-mat_path   = root_path.AppendChild("mtl_materialx_test")
-const_path = mat_path.AppendChild("constant_test")
+    surface = UsdShade.Shader.Define(stage, "/materials/MTL_test/surface")
+    surface.CreateIdAttr("ND_surface")
 
-root_spec  = Sdf.CreatePrimInLayer(layer, root_path)
-mat_spec   = Sdf.CreatePrimInLayer(layer, mat_path)
-const_spec = Sdf.CreatePrimInLayer(layer, const_path)
+    diffuseBsdf = UsdShade.Shader.Define(stage, "/materials/MTL_test/diffuse_bsdf")
+    diffuseBsdf.CreateIdAttr("ND_oren_nayar_diffuse_bsdf")
+    diffuseBsdf.CreateInput("color", Sdf.ValueTypeNames.Color3f).Set((0.18, 0.18, 0.18))
+    diffuseBsdf.CreateInput("normal", Sdf.ValueTypeNames.Vector3f).Set((0, 0, 0))
+    diffuseBsdf.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0)
+    diffuseBsdf.CreateInput("weight", Sdf.ValueTypeNames.Float).Set(0.8)
+    diffuseBsdf.CreateOutput("out", Sdf.ValueTypeNames.Token)
 
-root_spec.specifier  = Sdf.SpecifierDef
-mat_spec.specifier   = Sdf.SpecifierDef
-const_spec.specifier = Sdf.SpecifierDef
+    surface.CreateInput("bsdf", Sdf.ValueTypeNames.String).ConnectToSource(diffuseBsdf.ConnectableAPI(), "out")
+    material.CreateSurfaceOutput().ConnectToSource(surface.ConnectableAPI(), "out")
 
-root_spec.typeName  = "Scope"
-mat_spec.typeName   = "Material"
-const_spec.typeName = "Shader"
+    stage.Save()
 
 
-layer.Save()
+if __name__ == "__main__":
+    MtlxNodeTest("mtlx_test.usda")

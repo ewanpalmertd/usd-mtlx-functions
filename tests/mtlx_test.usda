@@ -1,11 +1,26 @@
 #usda 1.0
 
-def Scope "materials"
+def "materials"
 {
-    def Material "mtl_materialx_test"
+    def Material "MTL_test"
     {
-        def Shader "constant_test"
+        token outputs:surface.connect = </materials/MTL_test/surface.outputs:out>
+
+        def Shader "surface"
         {
+            uniform token info:id = "ND_surface"
+            string inputs:bsdf.connect = </materials/MTL_test/diffuse_bsdf.outputs:out>
+            token outputs:out
+        }
+
+        def Shader "diffuse_bsdf"
+        {
+            uniform token info:id = "ND_oren_nayar_diffuse_bsdf"
+            color3f inputs:color = (0.18, 0.18, 0.18)
+            vector3f inputs:normal = (0, 0, 0)
+            float inputs:roughness = 0
+            float inputs:weight = 0.8
+            token outputs:out
         }
     }
 }
