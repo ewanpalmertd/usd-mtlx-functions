@@ -26,6 +26,14 @@ def MtlxNodeTest(filename:str = None) -> None:
 
     stage.Save()
 
+def MtlxJsonTest(filename:str = None) -> None:
+    """ using UsdShade and a JSON file to streamline creation of materialx nodes
+    
+    :params:
+    filename(str) : the name of the output usda file
+    """
+    import json
 
 if __name__ == "__main__":
-    MtlxNodeTest("mtlx_test.usda")
+    # MtlxNodeTest("mtlx_test.usda")
+    MtlxJsonTest("mtlx_json_test.usda")
