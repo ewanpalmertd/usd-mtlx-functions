@@ -1,7 +1,5 @@
-import hou
-import json
 from typing import List, Dict
-
+import hou
 
 def getPropertiesDictFromNode(node: hou.LopNode) -> Dict:
     """
@@ -52,3 +50,19 @@ def getPropertiesDictFromNode(node: hou.LopNode) -> Dict:
         nodeProperties["outputs"][output] = "Token" # all materialx nodes come with output type as Token
 
     return nodeProperties
+
+def exportPropertiesToJson(propertiesDict: Dict) -> None:
+    """
+    converts the input dictionary of materialx properties to a json file to be used in MtlXAPI
+
+    :params:
+    propertiesDict : the input dictionary of properties using correct JSON formatting
+    """
+    import json
+
+    jsonDict: Dict = json.dumps(propertiesDict, indent=4)
+    with open("mtlx_standardsurface.json", "w") as file:
+        json.dump(jsonDict, file)
+    
+
+
