@@ -41,10 +41,7 @@ def getPropertiesDictFromNode(node: hou.LopNode) -> Dict:
         if parmLength > 1:
             suffix: str = f"{parmLength}{parmType.split('.')[-1][0].lower()}"
             default = node.parmTuple(parmName).eval()
-            if node.parm(f"{parmName}r"):
-                parmType = f"Color{suffix}"
-            else:
-                parmType = f"Vector{suffix}"
+            parmType = f"Color{suffix}" if node.parm(f"{parmName}r") else f"Vector{suffix}"
 
         else:
             default = node.evalParm(parmName)
